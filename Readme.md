@@ -21,7 +21,7 @@
  - `./bin/cryptogen generate --config=./crypto-config.yaml` 
  - `./bin/configtxgen -profile DemoProfile -channelID byfn-sys-channel -outputBlock ./config/genesis.block`  generate genesis block using above command 
  - `./bin/configtxgen -profile  ClaimsChannel  -outputCreateChannelTx ./config/insurancechannel.tx -channelID insuranceclaim`
- - above command is used to channel name.one thing to remember is channel name must be lower case
+ - above command is used to create channel .one thing to remember is channel name must be lower case
  - 
 
 
