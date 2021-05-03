@@ -49,20 +49,20 @@ func (t *newInsuranceClaim) Invoke(stub shim.ChaincodeStubInterface) pb.Response
 	if err != nil {
 		return shim.Error("something went wrong :" + err.Error())
 	}
-	if function == "fncreateclaim" && mspid == "workshopMSP" {
-		return t.fncreateclaim(stub, args)
-	} else if function == "fnupdatepolicestatus" && mspid == "policeMSP" {
-		return t.fnupdatepolicestatus(stub, args)
-	} else if function == "fnupdateinsurancestatus" && mspid == "insuranceMSP" {
-		return t.fnupdateinsurancestatus(stub, args)
-	} else if function == "fngetClaimbyID" {
-		return t.fngetClaimbyID(stub, args)
+	if function == "Fncreateclaim" && mspid == "workshopMSP" {
+		return t.Fncreateclaim(stub, args)
+	} else if function == "Fnupdatepolicestatus" && mspid == "policeMSP" {
+		return t.Fnupdatepolicestatus(stub, args)
+	} else if function == "Fnupdateinsurancestatus" && mspid == "insuranceMSP" {
+		return t.Fnupdateinsurancestatus(stub, args)
+	} else if function == "FngetClaimbyID" {
+		return t.FngetClaimbyID(stub, args)
 	}
 	return shim.Error("recevied unknown function name or user doesnot have access" + function)
 }
 
 //to add file into the network
-func (t *newInsuranceClaim) fncreateclaim(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *newInsuranceClaim) Fncreateclaim(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
@@ -91,7 +91,7 @@ func fnGetTimsstampinSec(stub shim.ChaincodeStubInterface) string {
 	to get the file based on given hash
 */
 
-func (t *newInsuranceClaim) fnupdatepolicestatus(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *newInsuranceClaim) Fnupdatepolicestatus(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting filehash")
@@ -118,7 +118,7 @@ func (t *newInsuranceClaim) fnupdatepolicestatus(stub shim.ChaincodeStubInterfac
 	return shim.Success(claimlogBytes)
 }
 
-func (t *newInsuranceClaim) fnupdateinsurancestatus(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *newInsuranceClaim) Fnupdateinsurancestatus(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
@@ -144,7 +144,7 @@ func (t *newInsuranceClaim) fnupdateinsurancestatus(stub shim.ChaincodeStubInter
 	return shim.Success(claimlogBytes)
 }
 
-func (t *newInsuranceClaim) fngetClaimbyID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *newInsuranceClaim) FngetClaimbyID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}

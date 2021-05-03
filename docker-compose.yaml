@@ -74,6 +74,10 @@ services:
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/msp/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/msp/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/msp/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
     command: orderer
     ports:
@@ -101,6 +105,13 @@ services:
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=accubitdemo_isc
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdbworkshop:5984
@@ -118,6 +129,7 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ./crypto-config/peerOrganizations/workshop.example.com/peers/peer0.workshop.example.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/workshop.example.com/peers/peer0.workshop.example.com/tls:/etc/hyperledger/fabric/tls
         - ./crypto-config/peerOrganizations/workshop.example.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
         # - ./peerledger/production/:/var/hyperledger/production/
@@ -152,12 +164,18 @@ services:
       - CORE_PEER_LOCALMSPID=policeMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.police.example.com:7051
+      - CORE_PEER_TLS_ENABLED=true
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=accubitdemo_isc
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchpolice:5984
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
       # provide the credentials for ledger to connect to CouchDB.  The username and password must
       # match the username and password set for the associated CouchDB.
@@ -172,6 +190,7 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ./crypto-config/peerOrganizations/police.example.com/peers/peer0.police.example.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/police.example.com/peers/peer0.police.example.com/tls:/etc/hyperledger/fabric/tls
         - ./crypto-config/peerOrganizations/police.example.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
         # - ./peerledger/production/:/var/hyperledger/production/
@@ -204,6 +223,7 @@ services:
       - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_LOCALMSPID=insuranceMSP
+      - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.insurance.example.com:7051
       # # the following setting starts chaincode containers on the same
@@ -212,6 +232,11 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=accubitdemo_isc
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchinsurance:5984
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
       # provide the credentials for ledger to connect to CouchDB.  The username and password must
       # match the username and password set for the associated CouchDB.
@@ -226,6 +251,7 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ./crypto-config/peerOrganizations/insurance.example.com/peers/peer0.insurance.example.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/insurance.example.com/peers/peer0.insurance.example.com/tls:/etc/hyperledger/fabric/tls
         - ./crypto-config/peerOrganizations/insurance.example.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
         # - ./peerledger/production/:/var/hyperledger/production/
@@ -259,16 +285,21 @@ services:
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.insurance.example.com:7051
       - CORE_PEER_LOCALMSPID=insuranceMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurance.example.com/peers/peer0.insurance.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurance.example.com/peers/peer0.insurance.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurance.example.com/peers/peer0.insurance.example.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurance.example.com/users/Admin@insurance.example.com/msp
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
-        - ./chaincode/:/opt/gopath/src/github.com/chaincode/
+        - ./chaincode:/opt/gopath/src/github.com/chaincode/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/config/
     networks:
         - isc
 
 
+#mycc_1:bba4af1906b00f6c5a7f22d19fa2f81f982fe33387a6a4005855afe84a3d4f63
